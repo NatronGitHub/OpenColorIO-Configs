@@ -136,6 +136,18 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: rec2020_to_linear.spi1d, interpolation: linear}
 
+  - !<ColorSpace>
+    name: V-Log Curve
+    family: input
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Panasonic V-Log
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: V-Log_to_linear.spi1d, interpolation: linear}
+
 # Spaces - Fully defined spaces for transformations to and from
 
   - !<ColorSpace>
@@ -190,6 +202,41 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<MatrixTransform> {matrix: [3.2404542, -1.5371385, -0.4985314, 0, -0.9692660,  1.8760108,  0.0415560, 0, 0.0556434, -0.2040259,  1.0572252, 0, 0, 0, 0, 1], direction: inverse}
+
+  - !<ColorSpace>
+    name: sRGB D65
+    family: Spaces
+    equalitygroup:
+    bitdepth: 32f
+    description: |
+      D65 sRGB space as outlined in IEC 61966-2-1:1999
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<ColorSpaceTransform> {src: sRGB Curve, dst: Linear sRGB / REC.709 D65}
+
+# V-Log - V-Gamut from https://gist.github.com/sobotka/83dadc636e03b031bd89b4ebafce5a19
+# Reference for the V-Gamut to REC.709 Matrix from 
+# http://pro-av.panasonic.net/en/varicam/common/pdf/VARICAM_V-Log_V-Gamut.pdf
+
+#  1.806576 -0.695697 -0.110879
+# -0.170090  1.305955 -0.135865
+# -0.025206 -0.154468  1.179674
+
+  - !<ColorSpace>
+    name: V-Log - V-Gamut
+    family: Spaces
+    equalitygroup:
+    bitdepth: 32f
+    description: |
+      Panasonic V-Log with V-Gamut
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: V-Log_to_linear.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [1.806576, -0.695697, -0.110879, 0, -0.170090 , 1.305955, -0.135865, 0, -0.025206, -0.154468, 1.179674, 0, 0, 0, 0, 1]}
 
 # View Specific - Defined unique spaces strictly intended for Views
 

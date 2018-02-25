@@ -435,6 +435,29 @@ colorspaces:
     allocationvars: [0, 1]
     to_reference: !<FileTransform> {src: vlog.spi1d, interpolation: linear}
 
+# V-Log - V-Gamut from https://gist.github.com/sobotka/83dadc636e03b031bd89b4ebafce5a19
+# Reference for the V-Gamut to REC.709 Matrix from 
+# http://pro-av.panasonic.net/en/varicam/common/pdf/VARICAM_V-Log_V-Gamut.pdf
+
+#  1.806576 -0.695697 -0.110879
+# -0.170090  1.305955 -0.135865
+# -0.025206 -0.154468  1.179674
+
+  - !<ColorSpace>
+    name: V-Log - V-Gamut
+    family: input
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Panasonic V-Log with V-Gamut
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: vlog.spi1d, interpolation: linear}
+        - !<MatrixTransform> {matrix: [1.806576, -0.695697, -0.110879, 0, -0.170090 , 1.305955, -0.135865, 0, -0.025206, -0.154468, 1.179674, 0, 0, 0, 0, 1]}
+
   - !<ColorSpace>
     name: Protune
     family: input
