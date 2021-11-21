@@ -2,3 +2,11 @@ This repository contains all the default color configurations, for use with
 OpenColorIO.
 
 Visit opencolorio.org for additional information.
+
+Other sources for OpenColorIO Configs (including ACES and SPI configs):
+- https://github.com/imageworks/OpenColorIO-Configs
+- https://github.com/hpd/OpenColorIO-Configs
+- https://github.com/colour-science/OpenColorIO-Configs
+- https://github.com/shridhar2011/OpenColorIO-ACES_1.2
+- https://github.com/sobotka/ocio-blender-default
+- https://github.com/sobotka/filmic-blender
