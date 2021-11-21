@@ -9,12 +9,12 @@ LD_LIBRARY_PATH=/net/soft_scratch/users/jeremys/git/ocio.js/build/src/core/
 import math, os, sys
 import PyOpenColorIO as OCIO
 
-print "OCIO",OCIO.version
+print("OCIO",OCIO.version)
 
 outputfilename = "config.ocio"
 
 def WriteSPI1D(filename, fromMin, fromMax, data):
-    f = file(filename,'w')
+    f = open(filename,'w')
     f.write("Version 1\n")
     f.write("From %s %s\n" % (fromMin, fromMax))
     f.write("Length %d\n" % len(data))
@@ -77,7 +77,7 @@ def fromSRGB(v):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromSRGB(x))
@@ -137,7 +137,7 @@ def fromRec709(v):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromRec709(x))
@@ -170,7 +170,7 @@ def fromCineon(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromCineon(x))
@@ -221,6 +221,16 @@ t = OCIO.ExponentTransform(value=(2.4,2.4,2.4,1.0))
 cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
+cs = OCIO.ColorSpace(name='Gamma2.6')
+cs.setDescription("Emulates an idealized Gamma 2.6 display device.")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([0.0, 1.0])
+
+t = OCIO.ExponentTransform(value=(2.6,2.6,2.6,1.0))
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
 
 ###############################################################################
 
@@ -240,7 +250,7 @@ def fromPanalog(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromPanalog(x))
@@ -274,7 +284,7 @@ def fromREDLog(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromREDLog(x))
@@ -306,7 +316,7 @@ def fromViperLog(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromViperLog(x))
@@ -354,7 +364,7 @@ def fromAlexaV3LogC(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromAlexaV3LogC(x))
@@ -397,7 +407,7 @@ def fromPLogLin(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromPLogLin(x))
@@ -433,7 +443,7 @@ def fromSLog(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
     x = i/(NUM_SAMPLES-1.0)
     x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
     data.append(fromSLog(x))
@@ -469,7 +479,7 @@ def fromSLog1(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
   x = i/(NUM_SAMPLES-1.0)
   x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
   data.append(fromSLog(x))
@@ -493,9 +503,10 @@ config.addColorSpace(cs)
 'SLog2'
 
 def fromSLog2(x):
-  if x >= 0.030001222851889303:
-    return ((219.0*((10.0 ** ((x-0.616596-0.04)/0.432699))-0.037584)/155.0)*0.9)
-  return ((x-0.030001222851889303)*0.28258064516129*0.9)
+  i = (x - 0.06256) / 0.8563;
+  if i >= 0.030001222851889303:
+    return ((219.0*((10.0 ** ((i-0.616596-0.03)/0.432699))-0.037584)/155.0)*0.9)
+  return ((i-0.030001222851889303)*0.28258064516129*0.9)
 
 # These samples and range have been chosen to write out this colorspace with
 # a limited over/undershoot range, which also exactly samples the 0.0,1.0
@@ -504,7 +515,7 @@ def fromSLog2(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
   x = i/(NUM_SAMPLES-1.0)
   x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
   data.append(fromSLog2(x))
@@ -539,7 +550,7 @@ def fromSLog3(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
   x = i/(NUM_SAMPLES-1.0)
   x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
   data.append(fromSLog3(x))
@@ -572,7 +583,7 @@ def fromCLog(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.0684932, 1.08676)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
   x = i/(NUM_SAMPLES-1.0)
   x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
   data.append(fromCLog(x))
@@ -593,6 +604,109 @@ config.addColorSpace(cs)
 
 ###############################################################################
 
+'Log3G10'
+
+def fromLog3G10(x):
+    if x < 0:
+      return (x / 15.1927) - 0.01
+    else:
+      return ((10 ** (x / 0.224282) - 1.0) / 155.975327) - 0.01
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in range(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromLog3G10(x))
+
+WriteSPI1D('luts/log3g10.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='Log3G10')
+cs.setDescription("Log3G10")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('log3g10.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+###############################################################################
+
+'Log3G12'
+
+def fromLog3G12(x):
+    sign = math.copysign(1.0, x)
+    return sign * (10 ** (abs(x) / 0.184904) - 1.0) / 347.189667
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in range(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromLog3G12(x))
+
+WriteSPI1D('luts/log3g12.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='Log3G12')
+cs.setDescription("Log3G12")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('log3g12.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+###############################################################################
+
+'HybridLogGamma'
+
+def fromHybridLogGamma(x):
+    if x < 0.5:
+      return x ** 2.0 / 3.0
+    else:
+      return math.exp((x - 1.00429347) / 0.17883277) + 0.02372241;
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in range(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromHybridLogGamma(x))
+
+WriteSPI1D('luts/hybdridloggamma.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='HybridLogGamma')
+cs.setDescription("HybdridLogGamma")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('hybdridloggamma.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+###############################################################################
+
 'Protune'
 
 def fromProtune(x):
@@ -605,7 +719,7 @@ def fromProtune(x):
 NUM_SAMPLES = 2**12+5
 RANGE = (-0.125, 1.125)
 data = []
-for i in xrange(NUM_SAMPLES):
+for i in range(NUM_SAMPLES):
   x = i/(NUM_SAMPLES-1.0)
   x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
   data.append(fromProtune(x))
@@ -623,8 +737,57 @@ t = OCIO.FileTransform('protune.spi1d', interpolation=OCIO.Constants.INTERP_LINE
 cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
+###############################################################################
+
+'BT1886'
+
+cs = OCIO.ColorSpace(name='BT1886')
+cs.setDescription("Emulates an idealized Gamma 2.4 display device.")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([0.0, 1.0])
+
+t = OCIO.ExponentTransform(value=(2.4,2.4,2.4,1.0))
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
 
 ###############################################################################
+
+'st2084'
+
+def fromST2084(x):
+  sign = math.copysign(1.0, x)
+  v = max(abs(x) ** (1.0 / 78.84375), 0.8359375)
+  L = (v - 0.8359375) / (18.8515625 - v * 18.6875)
+  return sign * 10000.0 * (L ** 6.277394636)
+
+# These samples and range have been chosen to write out this colorspace with
+# a limited over/undershoot range, which also exactly samples the 0.0,1.0
+# crossings
+
+NUM_SAMPLES = 2**12+5
+RANGE = (-0.125, 1.125)
+data = []
+for i in range(NUM_SAMPLES):
+  x = i/(NUM_SAMPLES-1.0)
+  x = Fit(x, 0.0, 1.0, RANGE[0], RANGE[1])
+  data.append(fromST2084(x))
+
+WriteSPI1D('luts/st2084.spi1d', RANGE[0], RANGE[1], data)
+
+cs = OCIO.ColorSpace(name='st2084')
+cs.setDescription("st2084")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+cs.setAllocationVars([RANGE[0], RANGE[1]])
+
+t = OCIO.FileTransform('st2084.spi1d', interpolation=OCIO.Constants.INTERP_LINEAR)
+cs.setTransform(t, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
+
+##############################################################################
 
 'REDSpace'
 
@@ -657,13 +820,13 @@ config.setActiveViews('sRGB')
 
 try:
     config.sanityCheck()
-except Exception,e:
-    print e
+except Exception as e:
+    print(e)
 
-f = file(outputfilename,"w")
+f = open(outputfilename,"w")
 f.write(config.serialize())
 f.close()
-print "Wrote",outputfilename
+print("Wrote",outputfilename)
 
 # Core/LUT/include/LUT/fnLUTConversions.h
 
