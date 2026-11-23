@@ -72,8 +72,8 @@ displays:
   None:
     - !<View> {name: Default, colorspace: Raw}
 
-active_displays: [sRGB, DCIP3, Rec709, XYZ, None]
-active_views: [Default, RRT, Raw, Log]
+active_displays: [sRGB, DCI-P3, Rec709, XYZ, None]
+active_views: [Default, Filmic, RRT, Film, Raw, Log, False Color]
 
 colorspaces:
   - !<ColorSpace>
